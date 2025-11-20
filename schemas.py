@@ -12,7 +12,7 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
 # Example schemas (replace with your own):
 
@@ -37,6 +37,34 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# Restaurant app schemas
+
+class MenuItem(BaseModel):
+    """Menu items available for ordering
+    Collection name: "menuitem"
+    """
+    name: str = Field(..., description="Dish name")
+    description: Optional[str] = Field(None, description="Dish description")
+    price: float = Field(..., ge=0, description="Price in dollars")
+    category: str = Field(..., description="Category (e.g., Pizza, Burger, Drinks)")
+    image: Optional[str] = Field(None, description="Image URL")
+    available: bool = Field(True, description="Whether item is currently available")
+
+class OrderItem(BaseModel):
+    item_id: str = Field(..., description="ID of the menu item")
+    quantity: int = Field(..., ge=1, description="Quantity of the item")
+
+class Order(BaseModel):
+    """Customer order
+    Collection name: "order"
+    """
+    customer_name: str = Field(..., description="Customer full name")
+    customer_email: str = Field(..., description="Customer email")
+    customer_address: str = Field(..., description="Delivery address")
+    items: List[OrderItem] = Field(..., description="List of items in the order")
+    notes: Optional[str] = Field(None, description="Special instructions")
+    status: str = Field("pending", description="Order status")
 
 # Add your own schemas here:
 # --------------------------------------------------
